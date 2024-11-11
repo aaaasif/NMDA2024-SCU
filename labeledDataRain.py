@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 
 # Step 1: Define the dataset based on the problem description
-# Assuming the table is as follows for illustration (replace with actual data from the assignment):
+# Replace this with the actual data from the assignment.
 data = {
     "Humidity": ["High", "Low", "High", "High", "Low"],
     "Cloud_Cover": ["Cloudy", "Sunny", "Sunny", "Cloudy", "Cloudy"],
@@ -18,9 +18,11 @@ data = {
 df = pd.DataFrame(data)
 
 # Step 3: Encode categorical variables
-encoder = LabelEncoder()
+# Use a separate LabelEncoder for each column
+encoders = {}
 for column in df.columns:
-    df[column] = encoder.fit_transform(df[column])
+    encoders[column] = LabelEncoder()
+    df[column] = encoders[column].fit_transform(df[column])
 
 # Step 4: Split features and target
 X = df.drop("Rain_Status", axis=1)
@@ -35,20 +37,19 @@ model.fit(X_train, y_train)
 
 # Step 7: Define the input conditions for prediction
 # High Humidity, Cloudy Skies, Medium Wind, Bright Sky
-input_conditions = np.array([[encoder.transform(["High"])[0],
-                              encoder.transform(["Cloudy"])[0],
-                              encoder.transform(["Medium"])[0],
-                              encoder.transform(["Bright"])[0]]])
+input_conditions = np.array([[encoders["Humidity"].transform(["High"])[0],
+                              encoders["Cloud_Cover"].transform(["Cloudy"])[0],
+                              encoders["Wind_Strength"].transform(["Medium"])[0],
+                              encoders["Sky_Condition"].transform(["Bright"])[0]]])
 
 # Step 8: Predict the likelihood of rain
 predicted_class = model.predict(input_conditions)[0]
 predicted_prob = model.predict_proba(input_conditions)[0]
 
 # Step 9: Decode the results back to labels
-rain_status = encoder.inverse_transform([predicted_class])[0]
-rain_likelihood = predicted_prob[encoder.transform(["Rain"])[0]] * 100
+rain_status = encoders["Rain_Status"].inverse_transform([predicted_class])[0]
+rain_likelihood = predicted_prob[encoders["Rain_Status"].transform(["Rain"])[0]] * 100
 
-
-# Step 10: Print the result
+# Step 10: Display the results
 print(f"Predicted Status: {rain_status}")
 print(f"Likelihood of Rain: {rain_likelihood:.2f}%")
