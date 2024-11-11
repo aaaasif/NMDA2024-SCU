@@ -51,7 +51,16 @@ predicted_prob = model.predict_proba(input_conditions)[0]
 # Step 9: Decode the results back to labels
 rain_status = encoders["Rain_Status"].inverse_transform([predicted_class])[0]
 rain_likelihood = predicted_prob[encoders["Rain_Status"].transform(["Rain"])[0]] * 100
+no_rain_likelihood = predicted_prob[encoders["Rain_Status"].transform(["No Rain"])[0]] * 100
 
-# Step 10: Display the results
-print(f"Predicted Status: {rain_status}")
-print(f"Likelihood of Rain: {rain_likelihood:.2f}%")
+# Step 10: Display the results in a detailed format
+print("Prediction Details:")
+print(f"Conditions Given:")
+print(f"- Humidity: High")
+print(f"- Cloud Cover: Cloudy")
+print(f"- Wind Strength: Medium")
+print(f"- Sky Condition: Bright")
+print("\nResults:")
+print(f"- Predicted Rain Status: {rain_status}")
+print(f"- Likelihood of Rain: {rain_likelihood:.2f}%")
+print(f"- Likelihood of No Rain: {no_rain_likelihood:.2f}%")
