@@ -37,10 +37,12 @@ model.fit(X_train, y_train)
 
 # Step 7: Define the input conditions for prediction
 # High Humidity, Cloudy Skies, Medium Wind, Bright Sky
-input_conditions = np.array([[encoders["Humidity"].transform(["High"])[0],
-                              encoders["Cloud_Cover"].transform(["Cloudy"])[0],
-                              encoders["Wind_Strength"].transform(["Medium"])[0],
-                              encoders["Sky_Condition"].transform(["Bright"])[0]]])
+input_conditions = pd.DataFrame([{
+    "Humidity": encoders["Humidity"].transform(["High"])[0],
+    "Cloud_Cover": encoders["Cloud_Cover"].transform(["Cloudy"])[0],
+    "Wind_Strength": encoders["Wind_Strength"].transform(["Medium"])[0],
+    "Sky_Condition": encoders["Sky_Condition"].transform(["Bright"])[0]
+}])
 
 # Step 8: Predict the likelihood of rain
 predicted_class = model.predict(input_conditions)[0]
